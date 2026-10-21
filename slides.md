@@ -289,7 +289,7 @@ layout: section
 codeSlide: true
 ---
 
-# La complexité...
+# Il ressemble à quoi le code...
 
 ```csharp {all|27,34,39}{maxHeight:'380px'}
 public void TirerSurUneGalinette(Guid id, string chasseur)
@@ -345,12 +345,6 @@ Et si on faisait l'anatomie d'un test ?
 Qu'est ce que vous associez à cela ?
 
 ---
-layout: section
----
-
-<img src="/anatomie.webp"  />
-
----
 codeSlide: true
 ---
 
@@ -380,11 +374,6 @@ public class AddANewComment
     ...
 }   
 ```
-
----
-layout: image
-image: /good-ut.webp
----
 
 ---
 layout: section
@@ -554,28 +543,6 @@ Code Coverage (%) = ( Lignes exécutées par les tests / Lignes exécutables tot
 </div>
 
 ---
-codeSlide: true
----
-
-# Branch Coverage
-
-La couverture de branches se concentre sur les structures de contrôle (`if`, `switch`) : combien de chemins sont traversés par au moins un test.
-
-```
-Branch Coverage (%) = ( Branches exécutées par au moins un test / Nombre total de branches ) × 100
-```
-
-```java
-// 2 chemins possibles : length > 5 et length <= 5
-// Un test sur un seul chemin = 50% de branch coverage
-public static boolean isLong(String s) {
-    return s.length() > 5;
-}
-```
-
-<div class="mt-4 text-lg">1 test (`isLong("hello") == false`) → 100% de <strong>Code Coverage</strong>, seulement 50% de <strong>Branch Coverage</strong>.</div>
-
----
 layout: statement
 ---
 
@@ -686,17 +653,6 @@ layout: section
 # Rapport de mutation
 
 <img src="/01.le-bon-test-ne-ment-pas/sample-report.webp" class="mx-auto rounded-lg" />
-
----
-layout: section
----
-
-# String mutation
-
-<div class="flex flex-row items-center justify-center gap-4">
-  <img src="/01.le-bon-test-ne-ment-pas/string-mutation1.webp" class="w-2/5 rounded-lg" />
-  <img src="/01.le-bon-test-ne-ment-pas/string-mutation2.webp" class="w-2/5 rounded-lg" />
-</div>
 
 ---
 layout: section
@@ -838,10 +794,6 @@ layout: section
 
 # Ce test ne ment plus. Mais...
 
-Il n'a pas rétréci - il a même **grandi** d'une ligne. Chaque test d'erreur en a gagné deux (`.WithMessage(...)`, `AssertLastEvent(...)`).
-
-Le signal (*"1 balle en moins, 1 galinette de plus pour Bernard"*) reste noyé dans le bruit (`Id`, `Nom`, `Terrain`... répétés à l'identique d'un test à l'autre).
-
 <div class="accent-badge mt-4">Combien de temps pour dire ce que ce test prouve, sans l'exécuter ?</div>
 
 </div>
@@ -864,7 +816,7 @@ codeSlide: true
 
 # Test Data Builders
 
-Sans builder - couplé au constructeur :
+Sans builder :
 
 ```csharp
 var address = new Address("Rue Sainte Catherine", "Bordeaux", new PostalCode("33000", "1 Bis"));
@@ -958,102 +910,6 @@ layout: statement
 # "This eliminates the irrelevant, and amplifies the essentials of the test."
 
 Robert C. Martin
-
----
-codeSlide: true
----
-
-<div class="h-full flex items-center justify-center">
-
-<div class="flex flex-col items-center gap-4 max-w-2xl">
-
-# Object Mothers
-
-Des méthodes statiques nommées qui construisent un objet "connu" et réutilisable, pour ne pas ressaisir ses détails dans chaque test :
-
-```java
-Address anAdressAtDijon = Addresses.Dijon();
-```
-
-<div class="accent-badge">Mais la moindre variation fait exploser le nombre de méthodes</div>
-
-```java 
-Address anAdressAtParis = Addresses.Paris();
-Address anAdressAtLondon = Addresses.London();
-Address anAdressAtRennes = Addresses.Rennes();
-// ...
-```
-
-<div class="text-sm opacity-80">D'où l'intérêt de combiner Object Mother (points de départ nommés) et Builder (variations) - ce qu'on va faire dans le Bouchonnois.</div>
-
-<a href="http://www.natpryce.com/articles/000714.html" target="_blank" class="link-preview link-preview-sm mt-2">
-  <div class="link-preview-title">Test Data Builders vs Object Mother</div>
-  <div class="link-preview-url">natpryce.com/articles/000714.html</div>
-</a>
-
-</div>
-
-</div>
-
----
-layout: section
----
-
-# Des assertions qui parlent métier
-
-<div class="text-lg space-y-3 max-w-2xl">
-
-`AssertLastEvent` (Histoire 1) est déjà une bonne intuition : une méthode nommée qui cache 2 `Check.That` derrière une phrase métier.
-
-On va généraliser cette intuition à tout le reste du bloc d'assertions - puis pousser le raisonnement un cran plus loin.
-
-</div>
-
----
-layout: section
----
-
-# Splitter la classe de tests
-
-<div class="flex flex-row items-center justify-center gap-6">
-  <img src="/02.le-bon-test-on-le-lit/extract-field.webp" class="w-3/5 rounded-lg" />
-  <img src="/02.le-bon-test-on-le-lit/pull-up-member.webp" class="w-2/5 rounded-lg" />
-</div>
-
-<div class="text-center mt-4">
-
-On centralise `Repository` / `Service` (extract field, puis pull up member)
-
-</div>
-
----
-layout: section
----
-
-<div class="flex flex-col items-center gap-4">
-  <img src="/02.le-bon-test-on-le-lit/move-to-file.webp" class="w-2/3 rounded-lg" />
-  <img src="/02.le-bon-test-on-le-lit/split-result.webp" class="w-1/3 rounded-lg" />
-</div>
-
-<div class="text-center mt-2">
-
-Chaque classe part `safe` dans son propre fichier
-
-</div>
-
----
-layout: section
----
-
-# Unit vs Acceptance
-
-<img src="/02.le-bon-test-on-le-lit/acceptance-unit.webp" class="w-2/5 mx-auto rounded-lg" />
-
-<div class="text-center mt-4">
-
-`ScenarioTests.cs` rejoue une partie entière : ce n'est pas un test unitaire, il mérite son propre dossier
-
-</div>
 
 ---
 codeSlide: true
@@ -1235,7 +1091,6 @@ codeSlide: true
 # Le test se réduit à ce qui compte
 
 ```csharp
-[Fact]
 public void AvecUnChasseurAyantDesBallesEtAssezDeGalinettesSurLeTerrain()
 {
     var partieDeChasse = AvecUnePartieDeChasseExistante(
@@ -1281,354 +1136,6 @@ codeSlide: true
 Élimine ce qui n'est pas pertinent, et amplifie l'essentiel du test.
 
 </div>
-
----
-layout: image
-image: /03.le-bon-test-ne-secrit-pas-a-la-main/le-bon-test-ne-secrit-pas-a-la-main.webp
----
-
----
-codeSlide: true
----
-
-# Un test compliqué...
-
-```csharp {all|14-17|19-20|22-23|25-26|28-29|69-75|83-105}{maxHeight:'340px'}
-[Fact]
-public void DéroulerUnePartie()
-{
-    var time = new DateTime(2024, 4, 25, 9, 0, 0);
-    var repository = new PartieDeChasseRepositoryForTests();
-    var service = new PartieDeChasseService(repository, () => time);
-    var chasseurs = new List<(string, int)>
-    {
-        ("Dédé", 20),
-        ("Bernard", 8),
-        ("Robert", 12)
-    };
-    var terrainDeChasse = ("Pitibon sur Sauldre", 4);
-    var id = service.Demarrer(
-        terrainDeChasse,
-        chasseurs
-    );
-
-    time = time.Add(TimeSpan.FromMinutes(10));
-    service.Tirer(id, "Dédé");
-
-    time = time.Add(TimeSpan.FromMinutes(30));
-    service.TirerSurUneGalinette(id, "Robert");
-
-    time = time.Add(TimeSpan.FromMinutes(20));
-    service.PrendreLapéro(id);
-
-    time = time.Add(TimeSpan.FromHours(1));
-    service.ReprendreLaPartie(id);
-
-    time = time.Add(TimeSpan.FromMinutes(2));
-    service.Tirer(id, "Bernard");
-
-    time = time.Add(TimeSpan.FromMinutes(1));
-    service.Tirer(id, "Bernard");
-
-    time = time.Add(TimeSpan.FromMinutes(1));
-    service.TirerSurUneGalinette(id, "Dédé");
-
-    time = time.Add(TimeSpan.FromMinutes(26));
-    service.TirerSurUneGalinette(id, "Robert");
-
-    time = time.Add(TimeSpan.FromMinutes(10));
-    service.PrendreLapéro(id);
-
-    time = time.Add(TimeSpan.FromMinutes(170));
-    service.ReprendreLaPartie(id);
-
-    time = time.Add(TimeSpan.FromMinutes(11));
-    service.Tirer(id, "Bernard");
-
-    time = time.Add(TimeSpan.FromSeconds(1));
-    service.Tirer(id, "Bernard");
-
-    time = time.Add(TimeSpan.FromSeconds(1));
-    service.Tirer(id, "Bernard");
-
-    time = time.Add(TimeSpan.FromSeconds(1));
-    service.Tirer(id, "Bernard");
-
-    time = time.Add(TimeSpan.FromSeconds(1));
-    service.Tirer(id, "Bernard");
-
-    time = time.Add(TimeSpan.FromSeconds(1));
-    service.Tirer(id, "Bernard");
-
-    time = time.Add(TimeSpan.FromSeconds(1));
-
-    try
-    {
-        service.Tirer(id, "Bernard");
-    }
-    catch (TasPlusDeBallesMonVieuxChasseALaMain)
-    {
-    }
-
-    time = time.Add(TimeSpan.FromMinutes(19));
-    service.TirerSurUneGalinette(id, "Robert");
-
-    time = time.Add(TimeSpan.FromMinutes(30));
-    service.TerminerLaPartie(id);
-
-    Check.That(service.ConsulterStatus(id))
-        .IsEqualTo(
-            @"15:30 - La partie de chasse est terminée, vainqueur : Robert - 3 galinettes
-15:00 - Robert tire sur une galinette
-14:41 - Bernard tire -> T'as plus de balles mon vieux, chasse à la main
-14:41 - Bernard tire
-14:41 - Bernard tire
-14:41 - Bernard tire
-14:41 - Bernard tire
-14:41 - Bernard tire
-14:41 - Bernard tire
-14:30 - Reprise de la chasse
-11:40 - Petit apéro
-11:30 - Robert tire sur une galinette
-11:04 - Dédé tire sur une galinette
-11:03 - Bernard tire
-11:02 - Bernard tire
-11:00 - Reprise de la chasse
-10:00 - Petit apéro
-09:40 - Robert tire sur une galinette
-09:10 - Dédé tire
-09:00 - La partie de chasse commence à Pitibon sur Sauldre avec Dédé (20 balles), Bernard (8 balles), Robert (12 balles)"
-        );
-}
-```
-
-<div class="mt-6 text-lg">Une seule assertion, mais qui vérifie l'intégralité de l'historique produit par 19 actions.</div>
-
----
-layout: section
----
-
-<div class="text-lg space-y-4 max-w-3xl">
-
-Cette chaîne n'a pas été écrite, elle a été **capturée** - exécutée une fois, puis recopiée telle quelle dans le test.
-
-</div>
-
----
-layout: section
----
-
-<div class="flex items-center gap-12">
-
-<div class="flex-1">
-
-# Le concept : Approval Testing
-
-Au lieu d'écrire la valeur attendue à la main, on **capture** la sortie réelle du code dans un fichier de référence, et on laisse un outil comparer, à chaque exécution, la sortie du jour à ce fichier.
-
-</div>
-
-<a href="https://github.com/ythirion/approval-testing-kata#2-approval-testing" target="_blank" class="link-preview flex-shrink-0 w-72">
-  <div class="link-preview-title">Approval Testing</div>
-  <div class="link-preview-url">github.com/ythirion/approval-testing-kata</div>
-</a>
-
-</div>
-
----
-layout: section
----
-
-# Le cycle capture / approuve / compare
-
-<div class="text-lg space-y-3 mt-4">
-
-- Pas de "fichier de référence" : le test échoue, on nous montre la sortie produite
-- On la relit, on l'**approuve**
-- Exécutions suivantes : identique 🟢, différent 🔴 (avec un diff sous les yeux)
-
-</div>
-
----
-layout: statement
----
-
-# Un air de déjà-vu : le `Golden Master`
-
-<div class="accent-badge mt-6">Michael Feathers - Working Effectively with Legacy Code</div>
-
----
-layout: section
----
-
-<div class="text-lg space-y-4 max-w-3xl">
-
-Face à du code existant, sans spec fiable, dont personne ne sait exactement ce qu'il est censé faire : on ne *devine* pas le comportement attendu, on **capture** le comportement actuel, tel quel.
-
-<div class="accent-badge mt-4">
-
-Un système développé par `Toshiba`, une `dette technique` jamais expliquée...
-
-</div>
-
-Ça te rappelle quelque chose ?
-
-</div>
-
----
-layout: section
----
-
-<div class="flex items-center gap-12">
-
-<div class="flex-1">
-
-# Verify
-
-```bash
-dotnet add package Verify.xUnit
-```
-
-```csharp
-global using VerifyTests;
-global using static VerifyXunit.Verifier;
-```
-
-</div>
-
-<a href="https://github.com/VerifyTests/Verify" target="_blank" class="link-preview flex-shrink-0 w-72">
-  <div class="link-preview-title">Verify</div>
-  <div class="link-preview-url">github.com/VerifyTests/Verify</div>
-</a>
-
-</div>
-
----
-codeSlide: true
----
-
-# Démo
-
-<v-click>
-
-```csharp {all|18}{maxHeight:'380px'}
-public class ScenarioTests
-{
-    [Fact]
-    public Task DéroulerUnePartie()
-    {
-        var time = new DateTime(2024, 4, 25, 9, 0, 0);
-        var repository = new PartieDeChasseRepositoryForTests();
-        var service = new PartieDeChasseService(repository, () => time);
-        var chasseurs = new List<(string, int)> { ("Dédé", 20), ("Bernard", 8), ("Robert", 12) };
-        var id = service.Demarrer(("Pitibon sur Sauldre", 4), chasseurs);
-
-        time = time.Add(TimeSpan.FromMinutes(10));
-        service.Tirer(id, "Dédé");
-        // ... les 17 autres actions du scénario, inchangées ...
-        time = time.Add(TimeSpan.FromMinutes(30));
-        service.TerminerLaPartie(id);
-
-        return Verify(service.ConsulterStatus(id));
-    }
-}
-```
-
-<div class="mt-4 text-lg">La <code>string</code> de 19 lignes recopiée à la main disparaît. Le test passe du premier coup 👌</div>
-
-</v-click>
-
----
-layout: section
----
-
-# Vérifier que le test peut échouer
-
-On modifie le fichier `.verified.txt` à la main et on relance.
-
-<div class="flex flex-col items-center gap-3 my-4">
-  <img src="/03.le-bon-test-ne-secrit-pas-a-la-main/compare-files.webp" class="w-4/5 rounded-lg" />
-</div>
-
-<div class="accent-badge">Never trust a test you haven't seen fail - Approval Test ou pas</div>
-
----
-layout: section
----
-
-<div class="flex items-center gap-12">
-
-<div class="flex-1">
-
-# `Boy Scout Rule`
-
-Le test est fiable - mais pas très lisible : duplication, `try / catch` vide, méthode de plus de 80 lignes.
-
-</div>
-
-<img src="/03.le-bon-test-ne-secrit-pas-a-la-main/boy-scout-rule.webp" class="w-2/5 flex-shrink-0 rounded-lg object-contain" />
-
-</div>
-
----
-layout: image
-image: /01.le-bon-test-ne-ment-pas/a-few-minutes-later.webp
----
-
----
-codeSlide: true
----
-
-# Version refactorée
-
-```csharp {all|3-6|16-19|23-26}{maxHeight:'400px'}
-public class ScenarioTests
-{
-    // Extraction de champs : _time, _repository, _service
-    private DateTime _time = new(2024, 4, 25, 9, 0, 0);
-    private readonly PartieDeChasseRepositoryForTests _repository = new();
-    private readonly PartieDeChasseService _service;
-
-    public ScenarioTests()
-    {
-        _service = new PartieDeChasseService(_repository, () => _time);
-    }
-
-    [Fact]
-    public Task DéroulerUnePartie()
-    {
-        // CommandBuilder + Chasseurs : suppression des string en dur
-        var command = DémarrerUnePartieDeChasse()
-            .Avec((Chasseurs.Dédé, 20), (Chasseurs.Bernard, 8), (Chasseurs.Robert, 12))
-            .SurUnTerrainRicheEnGalinettes();
-
-        var id = _service.Demarrer(command.Terrain, command.Chasseurs);
-
-        // Extraction de méthode : avance le temps, exécute, ignore l'exception éventuelle
-        After(TimeSpan.FromMinutes(10), () => _service.Tirer(id, Chasseurs.Dédé));
-        // ... reste du scénario, une ligne par action ...
-        After(TimeSpan.FromMinutes(30), () => _service.TerminerLaPartie(id));
-
-        return Verify(_service.ConsulterStatus(id));
-    }
-    ...
-}
-```
-
----
-codeSlide: true
----
-
-# Ce qu'il faut retenir
-
-<div class="mt-4 text-lg space-y-2">
-
-- `Approval Testing` = capturer la sortie réelle, l'approuver, laisser un outil comparer - à chaque lancement
-- Appliquer la `Boy Scout Rule` sur nos tests
-
-</div>
-
-<div class="accent-badge mt-6">Accorder la même importance à nos tests qu'à notre code de production</div>
 
 ---
 layout: image
@@ -1899,34 +1406,6 @@ public FsCheck.Property SurNImporteQuelTerrainSansGalinettesLaPartieNeDémarrePa
 codeSlide: true
 ---
 
-# Au moins un chasseur sans balle
-
-```csharp {maxHeight:'380px'}
-private static FsCheck.Gen<(string nom, int nbBalles)> ChasseurSansBalleGenerator()
-    => from nom in NomGenerator() select (nom, 0);
-
-private static FsCheck.Arbitrary<List<(string nom, int nbBalles)>> GroupeAvecAuMoinsUnChasseurSansBalleGenerator()
-    => (from chasseursArmés in GroupeDeChasseursArmésOuVideGenerator()
-        from chasseurSansBalle in ChasseurSansBalleGenerator()
-        select chasseursArmés.Append(chasseurSansBalle).ToList()).ToArbitrary();
-
-[Property]
-public FsCheck.Property SiAuMoinsUnChasseurSansBalleLaPartieNeDémarrePas()
-    => Prop.ForAll(
-        TerrainRicheEnGalinettesGenerator(),
-        GroupeAvecAuMoinsUnChasseurSansBalleGenerator(),
-        (terrain, chasseurs) =>
-            EchoueAvec<ImpossibleDeDémarrerUnePartieAvecUnChasseurSansBalle>(
-                terrain,
-                chasseurs,
-                savedPartieDeChasse => savedPartieDeChasse == null));
-```
-
-
----
-codeSlide: true
----
-
 Complémentaire avec des tests d'exemples
 
 ```csharp {all|3-15|18-28|32-41}{maxHeight:'340px'}
@@ -2184,7 +1663,7 @@ public interface IPartieDeChasseRepository
 }
 ```
 
-```csharp
+```csharp 
 [Fact]
 public void ApplicationServicesRules() =>
     ApplicationServices().Should()
@@ -2274,38 +1753,6 @@ codeSlide: true
 
 </div>
 
----
-layout: statement
----
-
-# "Never trust a test you haven't seen fail."
-
-Vladimir Khorikov
-
-
----
-layout: section
----
-
-# Ressources
-
-<div class="flex items-start justify-center gap-12">
-
-<div class="flex-1 flex flex-col items-center gap-4">
-
-<a href="https://github.com/ythirion/refactoring-du-bouchonnois/" target="_blank" class="flex justify-center">
-  <img src="/conclusion/refactoring-du-bouchonnois.webp" class="max-h-[50vh] w-auto object-contain rounded-lg" />
-</a>
-
-### Clean Architecture, Tell Don't Ask, FP / Monads, Event Sourcing, ...
-
-</div>
-
-<div class="flex-1 flex justify-center">
-  <img src="/conclusion/unit-testing-book.webp" class="max-h-[55vh] w-auto object-contain rounded-lg" />
-</div>
-
-</div>
 
 ---
 layout: image
