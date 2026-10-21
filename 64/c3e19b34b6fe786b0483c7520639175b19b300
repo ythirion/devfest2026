@@ -1,0 +1,19 @@
+slides.md
+  s_619204e4cd8cbb::t_b6cb96c5bd4623 1-2327
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "64c3e19b34b6fe786b0483c7520639175b19b300",
+  "prompts": {},
+  "sessions": {
+    "s_619204e4cd8cbb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b49e9b98-8718-4a6d-9530-57e489620d35",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Yoan Thirion <yoan.thirion@gmail.com>"
+    }
+  }
+}
