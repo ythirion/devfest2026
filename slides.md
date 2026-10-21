@@ -408,10 +408,8 @@ Maintenant qu'on a une meilleure vue sur le code, appliquons les préceptes des 
 
 1. **Le bon test ne ment pas**
 2. **Le bon test, on le lit**
-3. **Le bon test, on le maintient**
-4. **Le bon test, parfois, ne s'écrit pas à la main**
-5. **Le bon test couvre ce que tu n'as pas pensé à tester**
-6. **Le bon test protège l'architecture**
+3. **Le bon test couvre ce que tu n'as pas pensé à tester**
+4. **Le bon test protège l'architecture**
 
 </div>
 
@@ -1411,7 +1409,7 @@ Complémentaire avec des tests d'exemples
 ```csharp {all|3-15|18-28|32-41}{maxHeight:'340px'}
 public class DemarrerUnePartieDeChasse : PartieDeChasseServiceTest
 {
-    // Exemple-based test : avec Approval
+    // Exemple-based test
     [Fact]
     public Task AvecPlusieursChasseurs()
     {
@@ -1726,7 +1724,7 @@ codeSlide: true
 codeSlide: true
 ---
 
-# 5 questions à se poser
+# 4 questions à se poser
 
 <div class="flex items-center gap-12">
 
@@ -1738,13 +1736,10 @@ codeSlide: true
 **Histoire 2 : Le bon test, on le lit**
 - [ ] Est-ce que je le comprends en 5 secondes, ou dois-je le déchiffrer ?
 
-**Histoire 3 : Le bon test, parfois, ne s'écrit pas à la main**
-- [ ] Est-ce que je vérifie ce qui compte, ou une checklist recopiée à la main ?
-
-**Histoire 4 : Le bon test couvre ce que tu n'as pas pensé à tester**
+**Histoire 3 : Le bon test couvre ce que tu n'as pas pensé à tester**
 - [ ] Ne couvre-t-il que les valeurs que j'ai pensé à écrire ?
 
-**Histoire 5 : Le bon test protège l'architecture**
+**Histoire 4 : Le bon test protège l'architecture**
 - [ ] Protège-t-il aussi la structure, ou seulement le comportement ?
 
 </div>
