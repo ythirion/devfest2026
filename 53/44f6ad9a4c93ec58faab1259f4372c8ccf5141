@@ -1,0 +1,30 @@
+.github/workflows/slides.yml
+  h_0a88d9aba8622a 1-40,42-55
+  s_f774a8b7741b87::t_f125c86bda0050 41
+  s_f774a8b7741b87::t_96f40c0517436a 56
+LICENSE
+  s_f774a8b7741b87::t_33b7c54ed4ebb6 1-21
+README.md
+  s_f774a8b7741b87::t_fb71948a288f34 1-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5344f6ad9a4c93ec58faab1259f4372c8ccf5141",
+  "prompts": {},
+  "humans": {
+    "h_0a88d9aba8622a": {
+      "author": "Yoan Thirion <yoan.thirion@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_f774a8b7741b87": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f25f40d0-82ac-4328-bca9-6fc8fe1ecb52",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Yoan Thirion <yoan.thirion@gmail.com>"
+    }
+  }
+}
