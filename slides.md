@@ -64,6 +64,8 @@ codeSlide: true
 
 > Nos valeureux chasseurs du Bouchonnois ont besoin de pouvoir gérer leurs parties de chasse.
 
+<div class="accent-badge mt-6">Ils font appel à nous, devs du Bouchonnois, pour les aider à faire évoluer ce système</div>
+
 </div>
 
 <img src="/chasseur.webp" class="w-1/2 max-h-[440px] object-contain flex-shrink-0" />
