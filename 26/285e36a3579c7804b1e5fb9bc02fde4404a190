@@ -1,0 +1,27 @@
+slides.md
+  s_f774a8b7741b87::t_d6ce084673c37c 824-826,831-834,839-840,843-844,855,862
+  h_0a88d9aba8622a 89,91,108-115,120-121,407,476,497,504,518-519,750,822,1028,1110,1347,1381
+  s_f774a8b7741b87::t_84fa7b05cffc9d 863
+  h_0a88d9aba8622a 116-119,122,503,505,517,749,751,820
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "26285e36a3579c7804b1e5fb9bc02fde4404a190",
+  "prompts": {},
+  "humans": {
+    "h_0a88d9aba8622a": {
+      "author": "Yoan Thirion <yoan.thirion@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_f774a8b7741b87": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f25f40d0-82ac-4328-bca9-6fc8fe1ecb52",
+        "model": "unknown"
+      },
+      "human_author": "Yoan Thirion <yoan.thirion@gmail.com>"
+    }
+  }
+}
