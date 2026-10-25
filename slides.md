@@ -15,8 +15,6 @@ mdc: true
 css: unocss
 ---
 
-<img src="/devfest-dijon.webp" class="absolute right-10 top-[37%] w-56 bg-white rounded-lg p-3 shadow-lg" alt="Devfest Dijon" />
-
 ---
 layout: section
 ---
