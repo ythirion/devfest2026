@@ -79,21 +79,6 @@ Ils ont fait développer un système de gestion par l'entreprise Toshiba... et d
 -->
 
 ---
-codeSlide: true
----
-
-<div class="relative h-full flex items-center justify-center">
-
-<img src="/example-mapping.webp" class="max-h-full max-w-full object-contain rounded-lg" />
-
-<a href="https://xtrem-tdd.netlify.app/Flavours/Practices/example-mapping" target="_blank" class="link-preview link-preview-sm absolute top-1 right-1">
-  <div class="link-preview-title">Example Mapping</div>
-  <div class="link-preview-url">xtrem-tdd.netlify.app/Flavours/Practices/example-mapping</div>
-</a>
-
-</div>
-
----
 layout: section
 ---
 
@@ -101,8 +86,9 @@ layout: section
 
 <div class="flex-1">
 
-# Prise en main de la base de code
+# Prise en main du projet
 
+- [ ] Backlogs et autres artefacts
 - [ ] Technologies utilisées
 - [ ] Compiler / exécuter le code : analyser les potentiels `Warning`
 - [ ] Analyser la structure de la solution afin de comprendre l'architecture en place
@@ -118,6 +104,21 @@ layout: section
 </div>
 
 <!-- Libyear, Analyse comportementale de code, skill claude associée, C4 model, ... -->
+
+---
+codeSlide: true
+---
+
+<div class="relative h-full flex items-center justify-center">
+
+<img src="/example-mapping.webp" class="max-h-full max-w-full object-contain rounded-lg" />
+
+<a href="https://xtrem-tdd.netlify.app/Flavours/Practices/example-mapping" target="_blank" class="link-preview link-preview-sm absolute top-1 right-1">
+  <div class="link-preview-title">Example Mapping</div>
+  <div class="link-preview-url">xtrem-tdd.netlify.app/Flavours/Practices/example-mapping</div>
+</a>
+
+</div>
 
 ---
 layout: section
@@ -403,7 +404,7 @@ C'est tout l'enjeu des histoires qui suivent.
 ---
 layout: section
 ---
-# Quelques histoires
+# Les préceptes du Bouchonnois
 Maintenant qu'on a une meilleure vue sur le code, appliquons les préceptes des meilleurs devs du Bouchonnois :
 
 <div class="text-lg space-y-3 mt-4">
@@ -472,7 +473,7 @@ codeSlide: true
 
 # Et le code de production qu'il exerce ?
 
-```csharp
+```csharp {all|7}{maxHeight:'380px'}
 public void TirerSurUneGalinette(Guid id, string chasseur)
 {
     ...
@@ -493,13 +494,15 @@ public void TirerSurUneGalinette(Guid id, string chasseur)
 layout: section
 ---
 
-# Ce test ment
+# Ce test ment...
 
 <div class="text-lg space-y-4 max-w-3xl">
 
 Le test vérifie l'`Id`, le `Status`, le `Terrain`, et l'état des 3 `Chasseurs`... mais jamais `Events`.
 
-`Events` reconstitue **tout l'historique** d'une partie de chasse. Si un événement disparaît, se duplique ou change de contenu, ce test ne le verra **jamais**.
+`Events` reconstitue **tout l'historique** d'une partie de chasse. 
+
+Si un événement disparaît, se duplique ou change de contenu, ce test ne le verra **jamais**.
 
 <div class="accent-badge mt-4">Plus un test a l'air minutieux, plus il inspire confiance à tort</div>
 
@@ -511,7 +514,9 @@ layout: section
 
 <div class="flex flex-col items-center gap-6 text-center">
 
-# Quoi ?! Mais on a 100% de code coverage !
+# Quoi ?! 
+
+Mais on a 100% de code coverage...
 
 <div class="accent-badge">100% coverage sur tous les fichiers</div>
 
@@ -741,7 +746,9 @@ codeSlide: true
 
 # Un test qu'il faut déchiffrer
 
-On a tué nos mutants (Histoire 1). `Events` est vérifié partout, `Stryker` est content. Regardons `AvecUnChasseurAyantDesBallesEtAssezDeGalinettesSurLeTerrain` une fois corrigé :
+On a tué nos mutants. `Events` est vérifié partout, `Stryker` est content. 
+
+Regardons `AvecUnChasseurAyantDesBallesEtAssezDeGalinettesSurLeTerrain` une fois corrigé :
 
 ```csharp {all|17-25|27|29-37}{maxHeight:'340px'}
 public class PartieDeChasseServiceTests
@@ -810,21 +817,30 @@ layout: statement
 codeSlide: true
 ---
 
-<div class="h-full flex items-center justify-center">
-
-<div class="flex flex-col items-center gap-4 max-w-2xl">
-
 # Test Data Builders
+
+> Un petit truc facile à mettre en place
+
+<div class="grid grid-cols-2 gap-8 mt-4">
+
+<div class="flex flex-col gap-4">
 
 Sans builder :
 
 ```csharp
-var address = new Address("Rue Sainte Catherine", "Bordeaux", new PostalCode("33000", "1 Bis"));
+var address = new Address(
+    "Rue Sainte Catherine",
+    "Bordeaux",
+    new PostalCode("33000", "1 Bis"));
 ```
 
 <div class="accent-badge">Si le constructeur d'Address change, chaque test qui construit une Address doit changer</div>
 
+</div>
+
 <v-click>
+
+<div class="flex flex-col gap-4">
 
 Avec un `Test Data Builder` :
 
@@ -836,13 +852,14 @@ var address = ANewAddress()
     .Build();
 ```
 
-<a href="https://blog.ploeh.dk/2017/08/15/test-data-builders-in-c/" target="_blank" class="link-preview link-preview-sm mt-2">
+<a href="https://blog.ploeh.dk/2017/08/15/test-data-builders-in-c/" target="_blank" class="link-preview link-preview-sm w-fit">
   <div class="link-preview-title">Test Data Builders in C#</div>
   <div class="link-preview-url">blog.ploeh.dk/2017/08/15/test-data-builders-in-c</div>
 </a>
-</v-click>
 
 </div>
+
+</v-click>
 
 </div>
 
@@ -1008,7 +1025,7 @@ public class ChasseurBuilder
 layout: section
 ---
 
-# On identifie ce qu'on veut pouvoir écrire
+# Ça vaut aussi pour les assertions !!!
 
 <img src="/02.le-bon-test-on-le-lit/assertions.webp" class="mx-auto rounded-lg" />
 
@@ -1090,7 +1107,7 @@ codeSlide: true
 
 # Le test se réduit à ce qui compte
 
-```csharp
+```csharp {all|3-7|9|11-14}{maxHeight:'380px'}
 public void AvecUnChasseurAyantDesBallesEtAssezDeGalinettesSurLeTerrain()
 {
     var partieDeChasse = AvecUnePartieDeChasseExistante(
@@ -1327,7 +1344,7 @@ codeSlide: true
 
 # La propriété
 
-```csharp
+```csharp {all}{maxHeight:'380px'}
 [Property]
 public FsCheck.Property Sur1TerrainAvecGalinettesEtDesChasseursArmésLaPartieDémarre()
     => Prop.ForAll(
@@ -1361,7 +1378,7 @@ La partie ne démarre pas sans chasseurs
 
 <v-click>
 
-```csharp
+```csharp {all}{maxHeight:'380px'} 
 [Property]
 public FsCheck.Property SansChasseursSurNImporteQuelTerrainRicheEnGalinettes()
     => Prop.ForAll(
