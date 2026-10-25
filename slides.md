@@ -15,6 +15,8 @@ mdc: true
 css: unocss
 ---
 
+<img src="/devfest-dijon.webp" class="absolute right-10 top-[37%] w-56 bg-white rounded-lg p-3 shadow-lg" alt="Devfest Dijon" />
+
 ---
 layout: section
 ---
@@ -1775,7 +1777,7 @@ link: https://coda-dijon.github.io/advent-2026/
 ---
 
 ---
-layout: section
+class: merci-slide
 ---
 
 # Merci
@@ -1783,6 +1785,6 @@ layout: section
 <div class="flex items-center justify-center gap-12">
 
 <img src="/conclusion/merci.webp" class="w-3/5 rounded-lg" />
-<img src="/conclusion/qr.webp" class="w-1/5 rounded-lg" />
+<img src="/conclusion/feedback.webp" class="w-1/5 rounded-lg" />
 
 </div>

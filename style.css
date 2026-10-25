@@ -121,3 +121,19 @@
   align-items: center;
   justify-content: center;
 }
+/* Thank-you slide in Devfest Dijon colors */
+.slidev-layout.merci-slide {
+  --devfest-pink: #c2456a;
+  --devfest-red: #9a1a41;
+  background: #fff;
+  color: var(--devfest-red);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.slidev-layout.merci-slide h1 {
+  color: var(--devfest-pink);
+  font-size: 3rem;
+}
