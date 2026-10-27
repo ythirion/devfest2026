@@ -833,22 +833,10 @@ public class PartieDeChasseServiceTests
 ```
 
 ---
-layout: section
----
-
-<div class="text-lg space-y-4 max-w-3xl">
-
-# Ce test ne ment plus. Mais...
-
-<div class="accent-badge mt-4">Combien de temps pour dire ce que ce test prouve, sans l'exécuter ?</div>
-
-</div>
-
----
 layout: statement
 ---
 
-# Une seule classe, `848+` lignes, des dizaines de tests qui se ressemblent tous
+# Comment améliorer la lisibilité de nos tests ?
 
 <div class="accent-badge mt-6">Un bon test se lit / comprend en 5 secondes</div>
 
@@ -873,13 +861,11 @@ var address = new Address(
     new PostalCode("33000", "1 Bis"));
 ```
 
-<div class="accent-badge">Si le constructeur d'Address change, chaque test qui construit une Address doit changer</div>
+<div class="accent-badge" v-click="1">Si le constructeur d'Address change, chaque test qui construit une Address doit changer</div>
 
 </div>
 
-<v-click>
-
-<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-4" v-click="2">
 
 Avec un `Test Data Builder` :
 
@@ -898,8 +884,6 @@ var address = ANewAddress()
 
 </div>
 
-</v-click>
-
 </div>
 
 ---
@@ -911,8 +895,6 @@ codeSlide: true
 <div class="flex items-center gap-12">
 
 <div class="flex-1 min-w-0">
-
-
 
 ```csharp {all|28-29}{maxHeight:'320px'}
 public class AddressBuilder
@@ -949,11 +931,11 @@ public class AddressBuilder
 
 </div>
 
-<div class="flex-shrink-0 w-72 text-lg">
+<div class="flex-shrink-0 w-72 text-lg" v-click="2">
 
 Si `Address` gagne un champ, perd un champ, ou change l'ordre de ses paramètres : **un seul fichier à modifier**.
 
-<div class="accent-badge mt-4">Pas de résistance aux refactorings</div>
+<div class="accent-badge mt-4" v-click="3">Pas de résistance aux refactorings</div>
 
 </div>
 
@@ -1189,8 +1171,6 @@ layout: statement
 
 # Le bon test, on le lit en 5 secondes
 
-<div class="accent-badge mt-6">Test Data Builders + Object Mothers + assertions métier</div>
-
 ---
 codeSlide: true
 ---
@@ -1236,7 +1216,9 @@ public Task AvecPlusieursChasseurs()
 }
 ```
 
-<div class="mt-6 text-lg">3 chasseurs nommés, un terrain à 3 galinettes. Est-ce que ce sont ces valeurs précises qui comptent - ou une règle plus générale qu'elles illustrent ?</div>
+<div class="mt-6 text-lg">3 chasseurs nommés, un terrain à 3 galinettes.</div>
+
+<div class="accent-badge mt-6" v-click="1">Est-ce que ce sont ces valeurs précises qui comptent OU une règle plus générale qu'elles illustrent ?</div>
 
 ---
 layout: statement
@@ -1248,7 +1230,40 @@ layout: statement
 layout: section
 ---
 
-<img src="/04.le-bon-test-couvre-ce-que-tu-nas-pas-pense-a-tester/pbt-quadrant.webp" class="w-1/2 mx-auto rounded-lg" />
+<div class="relative mx-auto bg-white rounded-xl text-[#1b3b32]" style="width: 640px; height: 360px; font-family: Quicksand, sans-serif;">
+  <div class="absolute flex items-center gap-1 rounded-lg overflow-hidden pr-2" style="top: 18px; right: 40px; height: 56px; background: #456a91;">
+    <img src="/04.le-bon-test-couvre-ce-que-tu-nas-pas-pense-a-tester/pbt-logo.png" style="height: 56px;" />
+    <span class="text-white font-bold text-sm">PBT</span>
+  </div>
+  <!-- axes -->
+  <div class="absolute bg-[#1b3b32]" style="left: 70px; top: 16px; width: 2px; height: 290px;"></div>
+  <div class="absolute" style="left: 65px; top: 8px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid #1b3b32;"></div>
+  <div class="absolute bg-[#1b3b32]" style="left: 70px; top: 304px; width: 540px; height: 2px;"></div>
+  <div class="absolute" style="left: 606px; top: 299px; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 10px solid #1b3b32;"></div>
+  <!-- libellés des axes -->
+  <div class="absolute text-xs font-bold" style="left: 12px; top: 20px;">Complet</div>
+  <div class="absolute text-xs font-bold" style="left: 12px; top: 290px;">Partiel</div>
+  <div class="absolute text-xs font-bold text-center" style="left: -95px; top: 150px; width: 250px; transform: rotate(-90deg);">Nombre d'entrées possibles couvertes</div>
+  <div class="absolute text-xs font-bold" style="left: 80px; top: 312px;">Faible</div>
+  <div class="absolute text-xs font-bold" style="left: 560px; top: 312px;">Élevée</div>
+  <div class="absolute text-sm font-bold text-center" style="left: 70px; top: 330px; width: 540px;">Conformité métier</div>
+  <!-- quadrants -->
+  <div class="absolute rounded-md p-3" style="left: 80px; top: 18px; width: 260px; height: 96px; background: #fde9b8; border: 2px solid #f2c14e;">
+    <div class="font-bold text-lg">Aléatoire</div>
+    <div class="text-xs mt-1">- Fuzzing<br/>- Monkey testing</div>
+  </div>
+  <div class="absolute rounded-md p-3 flex flex-col justify-between" style="left: 80px; top: 122px; width: 260px; height: 174px; background: #d5e8d4; border: 2px solid #5f9a5c;">
+    <div>
+      <div class="font-bold text-lg">Analyse statique</div>
+      <div class="text-xs mt-1">- Fuites mémoire<br/>- Mémoire non initialisée<br/>- Conversions dangereuses</div>
+    </div>
+    <div class="text-xs">- Compilation<br/>- Variables inutilisées</div>
+  </div>
+  <div class="absolute rounded-md p-3" style="left: 350px; top: 196px; width: 250px; height: 100px; background: #f8d8c8; border: 2px solid #dd7a4c;">
+    <div class="font-bold text-lg">Basés sur des exemples</div>
+    <div class="text-xs mt-1">- Tests unitaires<br/>- Tests d'UI<br/>- Tests de recette</div>
+  </div>
+</div>
 
 <div class="text-center mt-4">Les tests <code>example-based</code> couvrent bien la conformité métier, mal l'espace des entrées possibles</div>
 
@@ -1277,7 +1292,32 @@ On fixe une **règle** censée être vraie pour *toute* entrée valide, puis on 
 layout: section
 ---
 
-<img src="/04.le-bon-test-couvre-ce-que-tu-nas-pas-pense-a-tester/pbt-details.webp" class="mx-auto rounded-lg" />
+<div class="relative mx-auto bg-white rounded-xl text-[#1b3b32]" style="width: 780px; height: 340px; font-family: Quicksand, sans-serif;">
+  <!-- flèches -->
+  <svg class="absolute inset-0" width="780" height="340">
+    <defs>
+      <marker id="pbt-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="context-stroke" />
+      </marker>
+    </defs>
+    <line x1="200" y1="60" x2="262" y2="98" stroke="#1b3b32" stroke-width="2.5" marker-end="url(#pbt-arrow)" />
+    <line x1="574" y1="110" x2="548" y2="110" stroke="#dd7a4c" stroke-width="2.5" marker-end="url(#pbt-arrow)" />
+    <line x1="215" y1="156" x2="262" y2="156" stroke="#456a91" stroke-width="2.5" marker-end="url(#pbt-arrow)" />
+    <line x1="470" y1="266" x2="470" y2="224" stroke="#5f9a5c" stroke-width="2.5" marker-end="url(#pbt-arrow)" />
+  </svg>
+  <!-- la propriété -->
+  <div class="absolute font-mono text-lg">
+    <div class="absolute flex items-center px-2 rounded whitespace-nowrap" style="left: 270px; top: 90px; height: 40px; border: 3px solid #1b3b32;"><b>pour tout</b></div>
+    <div class="absolute flex items-center px-2 rounded whitespace-nowrap" style="left: 395px; top: 90px; height: 40px; border: 3px solid #dd7a4c;">(x, y, ...)</div>
+    <div class="absolute flex items-center px-2 rounded whitespace-nowrap" style="left: 270px; top: 136px; width: 470px; height: 40px; border: 3px solid #456a91;"><b class="text-[#456a91]">tel que</b>&nbsp;précondition(x, y, ...)&nbsp;<b class="text-[#456a91]">est vraie</b></div>
+    <div class="absolute flex items-center px-2 rounded whitespace-nowrap" style="left: 270px; top: 182px; width: 470px; height: 40px; border: 3px solid #5f9a5c;"><b class="text-[#5f9a5c]">propriété</b>&nbsp;(x, y, ...)&nbsp;<b class="text-[#5f9a5c]">est satisfaite</b></div>
+  </div>
+  <!-- annotations -->
+  <div class="absolute text-sm font-bold" style="left: 30px; top: 42px; width: 190px;">l'exécuter plusieurs fois</div>
+  <div class="absolute text-sm font-bold text-[#dd7a4c] leading-tight" style="left: 578px; top: 78px; width: 190px;">générer des entrées aléatoires<div class="text-xs font-normal">selon les générateurs définis</div></div>
+  <div class="absolute text-sm font-bold text-[#456a91]" style="left: 20px; top: 140px; width: 190px;">vérifier les préconditions<div class="text-xs font-normal">Échec : pas une erreur, l'entrée est ignorée</div></div>
+  <div class="absolute text-sm font-bold text-[#5f9a5c] text-center" style="left: 320px; top: 270px; width: 300px;">exécuter le prédicat<div class="text-xs font-normal">Échec : un contre-exemple, que l'on essaie de réduire (shrinking)</div></div>
+</div>
 
 ---
 layout: section
@@ -1324,7 +1364,7 @@ codeSlide: true
 
 <div class="text-lg mb-2">On annote avec <code>[Property]</code>, on retourne une <code>Property</code> - un prédicat passé à <code>.ToProperty()</code>. FsCheck génère lui-même les paramètres.</div>
 
-```csharp {all|1-4|6-9|11-14}
+```csharp {all|11-14}
 // Commutativité : l'ordre des termes n'a pas d'importance -> 2 + 3 = 3 + 2
 [Property]
 public Property Commutativity(int x, int y) =>
@@ -1374,7 +1414,7 @@ codeSlide: true
 
 # Les générateurs
 
-```csharp {all|1-2|4-7|9-12|14-17}{maxHeight:'380px'}
+```csharp {all|4-7}{maxHeight:'380px'}
 private static FsCheck.Gen<string> NomGenerator()
     => ArbMap.Default.GeneratorFor<string>().Where(nom => !string.IsNullOrWhiteSpace(nom));
 
@@ -1420,33 +1460,6 @@ layout: statement
 ---
 
 # Les cas non-passants aussi sont des propriétés
-
----
-codeSlide: true
----
-
-# Sans chasseurs
-
-```text
-forall (terrain riche en galinettes)
-La partie ne démarre pas sans chasseurs
-```
-
-<v-click>
-
-```csharp {all}{maxHeight:'380px'} 
-[Property]
-public FsCheck.Property SansChasseursSurNImporteQuelTerrainRicheEnGalinettes()
-    => Prop.ForAll(
-        TerrainRicheEnGalinettesGenerator(),
-        terrain =>
-            EchoueAvec<ImpossibleDeDémarrerUnePartieSansChasseur>(
-                terrain,
-                [],
-                savedPartieDeChasse => savedPartieDeChasse == null));
-```
-
-</v-click>
 
 ---
 codeSlide: true
@@ -1784,16 +1797,16 @@ codeSlide: true
 
 <div class="flex-1 mt-4 text-base space-y-1.5">
 
-**Histoire 1 : Le bon test ne ment pas**
-- [ ] Ce test a-t-il déjà échoué pour une bonne raison ?
+**Précepte 1 : Le bon test ne ment pas**
+- [ ] Si je casse le code qu'il couvre, passe-t-il au rouge ?
 
-**Histoire 2 : Le bon test, on le lit**
+**Précepte 2 : Le bon test, on le lit**
 - [ ] Est-ce que je le comprends en 5 secondes, ou dois-je le déchiffrer ?
 
-**Histoire 3 : Le bon test couvre ce que tu n'as pas pensé à tester**
+**Précepte 3 : Le bon test couvre ce que tu n'as pas pensé à tester**
 - [ ] Ne couvre-t-il que les valeurs que j'ai pensé à écrire ?
 
-**Histoire 4 : Le bon test protège l'architecture**
+**Précepte 4 : Le bon test protège l'architecture**
 - [ ] Protège-t-il aussi la structure, ou seulement le comportement ?
 
 </div>
