@@ -1221,7 +1221,7 @@ codeSlide: true
 
 # Un exemple, c'est un point. La règle, c'est une droite.
 
-```csharp
+```csharp {all}
 [Fact]
 public Task AvecPlusieursChasseurs()
 {
@@ -1724,38 +1724,6 @@ DÉMO (repo atelier, branche `histoires/05.le-bon-test-protege-larchitecture`)
 5. Retirer le champ, revenir au vert. "Never trust a test you haven't seen fail"
 -->
 
----
-layout: statement
----
-
-# Le port du repository : où doit vivre `IPartieDeChasseRepository` ?
-
----
-codeSlide: true
----
-
-# On déplace le port dans le Domain
-
-```csharp
-// Bouchonnois/Domain/IPartieDeChasseRepository.cs (déplacé depuis Repository/)
-namespace Bouchonnois.Domain;
-
-public interface IPartieDeChasseRepository
-{
-    void Save(PartieDeChasse partieDeChasse);
-    PartieDeChasse GetById(Guid partieDeChasseId);
-}
-```
-
-```csharp 
-[Fact]
-public void ApplicationServicesRules() =>
-    ApplicationServices().Should()
-        .NotDependOnAny(Infrastructure())
-        .Check();
-```
-
-<div class="mt-4 text-lg"><code>Bouchonnois.Repository</code> ne contient plus aucune classe de production - il attend une future implémentation concrète.</div>
 
 ---
 codeSlide: true
