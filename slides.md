@@ -427,11 +427,11 @@ codeSlide: true
 
 # Un test du Bouchonnois
 
-```csharp {all|1|4|6-15|17-18|20-35}{maxHeight:'380px'}
+```csharp {all|1|4|6-15|17-18|20-21}{maxHeight:'380px'}
 public class TirerSurUneGalinette
 {
     [Fact]
-    public void AvecUnChasseurAyantDesBallesEtAssezDeGalinettesSurLeTerrain()
+    public void EchoueAvecUnChasseurNayantPlusDeBalles()
     {
         // Arrange
         var id = Guid.NewGuid();
@@ -439,30 +439,16 @@ public class TirerSurUneGalinette
         repository.Add(new PartieDeChasse(id, new Terrain("Pitibon sur Sauldre") {NbGalinettes = 3},
         [
             new("Dédé") { BallesRestantes = 20 },
-            new("Bernard") { BallesRestantes = 8 },
+            new("Bernard") { BallesRestantes = 0 },
             new("Robert") { BallesRestantes = 12 }
         ]));
         var service = new PartieDeChasseService(repository, () => DateTime.Now);
-    
+
         // Act
-        service.TirerSurUneGalinette(id, "Bernard");
-    
+        var tirerSansBalle = () => service.TirerSurUneGalinette(id, "Bernard");
+
         // Assert
-        var savedPartieDeChasse = repository.SavedPartieDeChasse();
-        Check.That(savedPartieDeChasse!.Id).IsEqualTo(id);
-        Check.That(savedPartieDeChasse.Status).IsEqualTo(PartieStatus.EnCours);
-        Check.That(savedPartieDeChasse.Terrain.Nom).IsEqualTo("Pitibon sur Sauldre");
-        Check.That(savedPartieDeChasse.Terrain.NbGalinettes).IsEqualTo(2);
-        Check.That(savedPartieDeChasse.Chasseurs).HasSize(3);
-        Check.That(savedPartieDeChasse.Chasseurs[0].Nom).IsEqualTo("Dédé");
-        Check.That(savedPartieDeChasse.Chasseurs[0].BallesRestantes).IsEqualTo(20);
-        Check.That(savedPartieDeChasse.Chasseurs[0].NbGalinettes).IsEqualTo(0);
-        Check.That(savedPartieDeChasse.Chasseurs[1].Nom).IsEqualTo("Bernard");
-        Check.That(savedPartieDeChasse.Chasseurs[1].BallesRestantes).IsEqualTo(7);
-        Check.That(savedPartieDeChasse.Chasseurs[1].NbGalinettes).IsEqualTo(1);
-        Check.That(savedPartieDeChasse.Chasseurs[2].Nom).IsEqualTo("Robert");
-        Check.That(savedPartieDeChasse.Chasseurs[2].BallesRestantes).IsEqualTo(12);
-        Check.That(savedPartieDeChasse.Chasseurs[2].NbGalinettes).IsEqualTo(0);
+        Check.ThatCode(tirerSansBalle).Throws<TasPlusDeBallesMonVieuxChasseALaMain>();
     }
 }
 ```
@@ -473,15 +459,19 @@ codeSlide: true
 
 # Et le code de production qu'il exerce ?
 
-```csharp {all|7}{maxHeight:'380px'}
+```csharp {all|6-7}{maxHeight:'380px'}
 public void TirerSurUneGalinette(Guid id, string chasseur)
 {
     ...
-    chasseurQuiTire.BallesRestantes--;
-    chasseurQuiTire.NbGalinettes++;
-    partieDeChasse.Terrain.NbGalinettes--;
-    partieDeChasse.Events.Add(new Event(_timeProvider(), $"{chasseur} tire sur une galinette"));
-}
+    if (chasseurQuiTire.BallesRestantes == 0)
+    {
+        partieDeChasse.Events.Add(new Event(_timeProvider(), 
+            $"{chasseur} veut tirer sur une galinette -> T'as plus de balles mon vieux, chasse à la main"));
+        _repository.Save(partieDeChasse);
+
+        throw new TasPlusDeBallesMonVieuxChasseALaMain();
+    }
+    ...
 ```
 
 <div class="mt-8 text-lg" v-click="1">
@@ -502,21 +492,12 @@ codeSlide: true
 - On la modifie/supprime à la main - c'est notre `mutant`
 - On relance la suite de tests
 
-<div class="accent-badge mt-4">Les tests passent toujours : le mutant a survécu...</div>
+<div class="accent-badge mt-4" v-click="1">Si les tests passent toujours : le mutant a survécu...</div>
 
 </div>
 
 <!--
-DÉMO (repo atelier `le-bon-chasseur-le-mauvais-chasseur-et-le-bon-test`, branche `main`)
-1. Ouvrir `src/Bouchonnois/Service/PartieDeChasseService.cs`, méthode `TirerSurUneGalinette` (l. 98-101) :
-   chasseurQuiTire.BallesRestantes--; / chasseurQuiTire.NbGalinettes++; / Terrain.NbGalinettes--; / Events.Add(...)
-2. Supprimer (commenter) la ligne 101 : `partieDeChasse.Events.Add(new Event(_timeProvider(), $"{chasseur} tire sur une galinette"));`
-3. Relancer les tests (`cd src && dotnet test`) : tout reste VERT
-4. Montrer le test responsable : `src/Bouchonnois.Tests/Service/PartieDeChasseServiceTests.cs`,
-   `TirerSurUneGalinette.AvecUnChasseurAyantDesBallesEtAssezDeGalinettesSurLeTerrain` (l. 95)
-   -> il vérifie Id, Status, Terrain et chaque Chasseur... mais jamais `Events`
-5. Rappeler : 100% de coverage, la ligne est exécutée mais jamais vérifiée. Remettre la ligne.
-PartieDeChasseService.cs -> TirerSurUneGalinette` (l. 91)
+PartieDeChasseService.cs -> TirerSurUneGalinette (l. 91)
 -->
 
 ---
@@ -668,25 +649,73 @@ layout: section
 codeSlide: true
 ---
 
-# Démo : tueur de mutant
+# Comment tuer un mutant ?
 
-<img src="/01.le-bon-test-ne-ment-pas/mutant.webp" class="w-64 mx-auto rounded-lg mt-8" />
+<div class="flex gap-6 items-start">
+
+<div class="w-2/3" style="--slidev-code-font-size: 0.62rem; --slidev-code-line-height: 1.45;">
+
+```csharp {all|4,14|19|20-24}
+[Fact]
+public void EchoueAvecUnChasseurNayantPlusDeBalles()
+{
+    var now = new DateTime(2024, 6, 6, 14, 50, 45);
+    var id = Guid.NewGuid();
+    var repository = new PartieDeChasseRepositoryForTests();
+    repository.Add(new PartieDeChasse(id,
+        new Terrain("Pitibon sur Sauldre") { NbGalinettes = 3 },
+        [
+            new("Dédé") { BallesRestantes = 20 },
+            new("Bernard") { BallesRestantes = 0 },
+            new("Robert") { BallesRestantes = 12 }
+        ]));
+    var service = new PartieDeChasseService(repository, () => now);
+    var tirerSansBalle = () => service.TirerSurUneGalinette(id, "Bernard");
+
+    Check.ThatCode(tirerSansBalle).Throws<TasPlusDeBallesMonVieuxChasseALaMain>();
+
+    var events = repository.SavedPartieDeChasse()!.Events;
+    Check.That(events).HasSize(1);
+    Check.That(events[0])
+        .IsEqualTo(new Event(now,
+            "Bernard veut tirer sur une galinette -> " +
+            "T'as plus de balles mon vieux, chasse à la main"));
+}
+```
+
+</div>
+
+<div class="flex-1 space-y-4">
+
+<div v-click="1">
+
+**1. Figer le temps** : `() => now` plutôt que `() => DateTime.Now`, pour pouvoir comparer un `Event`
+
+</div>
+
+<div v-click="2">
+
+**2. Relire la partie sauvegardée** : si `_repository.Save` disparaît, plus de partie à relire
+
+</div>
+
+<div v-click="3">
+
+**3. Vérifier l'événement émis** : s'il disparaît ou change de message, le test échoue
+
+</div>
+
+<div v-click="4" class="accent-badge">On relance Stryker : le mutant est tué</div>
+
+</div>
+
+</div>
 
 <!--
-DÉMO (repo atelier, branche `main` ; solution sur `histoires/01.le-bon-test-ne-ment-pas`)
-1. Lancer Stryker : `cd src && dotnet stryker` (installé via `dotnet tool install -g dotnet-stryker`)
-2. Ouvrir `StrykerOutput/<date>/reports/mutation-report.html`, aller sur `PartieDeChasseService.cs`
-   -> montrer les mutants `Survived` : string mutation (messages des events), statement mutation (`Events.Add`, `_repository.Save`)
-3. Tuer le mutant dans `PartieDeChasseServiceTests.cs`, test `AvecUnChasseurAyantDesBallesEtAssezDeGalinettesSurLeTerrain` (l. 95) :
-   - figer le temps : `var now = new DateTime(2024, 6, 6, 14, 50, 45);` et `new PartieDeChasseService(repository, () => now)`
-     (à la place de `() => DateTime.Now`)
-   - ajouter : `Check.That(savedPartieDeChasse.Events).HasSize(1);`
-               `Check.That(savedPartieDeChasse.Events[0]).IsEqualTo(new Event(now, "Bernard tire sur une galinette"));`
-4. Relancer Stryker : le mutant sur `Events.Add` est tué, le score progresse
-5. Si le temps le permet : tests d'erreur (`EchoueCarLeChasseurNestPasDansLaPartie`)
-   -> `.Throws<ChasseurInconnu>().WithMessage("Chasseur inconnu Chasseur inconnu")` + `Check.That(repository.SavedPartieDeChasse()).IsNull();`
+- Le test existant ne vérifiait que le type de l'exception
+- Les mutants tués : statement mutation sur `Events.Add` et `_repository.Save` (l. 91-93), string mutation sur le message de l'événement
+- Même stratégie sur les tests voisins (`EchoueCarLeChasseurNestPasDansLaPartie` -> `.WithMessage(...)` + `Check.That(repository.SavedPartieDeChasse()).IsNull()`)
 -->
-
 ---
 layout: image
 image: /01.le-bon-test-ne-ment-pas/a-few-minutes-later.webp
