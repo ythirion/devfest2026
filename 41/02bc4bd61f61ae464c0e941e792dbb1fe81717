@@ -1,0 +1,31 @@
+slides.md
+  s_f774a8b7741b87::t_d2562f33bc6a5f 1296,1298-1302,1307-1309,1314-1315,1320
+  h_0a88d9aba8622a 839,864,868,934,938,1219-1221,1367,1417
+  s_f774a8b7741b87::t_c1fd545eacb664 1246
+  s_f774a8b7741b87::t_b47c45b9f43cc6 1235-1236
+  s_f774a8b7741b87::t_62712eeafe4ab8 1295,1297,1303-1306,1310-1313,1316-1319
+  s_f774a8b7741b87::t_04ec0b8ed6acd8 1234
+  s_f774a8b7741b87::t_b02b5451115c2a 1233,1238-1245,1247-1266
+  s_f774a8b7741b87::t_005e17f7aaf19e 1237
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4102bc4bd61f61ae464c0e941e792dbb1fe81717",
+  "prompts": {},
+  "humans": {
+    "h_0a88d9aba8622a": {
+      "author": "Yoan Thirion <yoan.thirion@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_f774a8b7741b87": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f25f40d0-82ac-4328-bca9-6fc8fe1ecb52",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Yoan Thirion <yoan.thirion@gmail.com>"
+    }
+  }
+}
