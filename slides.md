@@ -484,29 +484,40 @@ public void TirerSurUneGalinette(Guid id, string chasseur)
 }
 ```
 
-<div class="mt-8 text-lg">
+<div class="mt-8 text-lg" v-click="1">
 
-4 lignes de comportement métier. **Combien sont réellement vérifiées** par le test précédent ?
+Ce système sert avant tout à répondre à une **exigence de traçabilité** : si un randonneur se fait tirer dessus, on doit pouvoir **retracer les événements**.
 
 </div>
 
 ---
-layout: section
+codeSlide: true
 ---
 
-# Ce test ment...
+# Démo : mutation
 
-<div class="text-lg space-y-4 max-w-3xl">
+<div class="text-lg space-y-3 max-w-2xl">
 
-Le test vérifie l'`Id`, le `Status`, le `Terrain`, et l'état des 3 `Chasseurs`... mais jamais `Events`.
+- On choisit une ligne du code de production
+- On la modifie/supprime à la main - c'est notre `mutant`
+- On relance la suite de tests
 
-`Events` reconstitue **tout l'historique** d'une partie de chasse. 
-
-Si un événement disparaît, se duplique ou change de contenu, ce test ne le verra **jamais**.
-
-<div class="accent-badge mt-4">Plus un test a l'air minutieux, plus il inspire confiance à tort</div>
+<div class="accent-badge mt-4">Les tests passent toujours : le mutant a survécu...</div>
 
 </div>
+
+<!--
+DÉMO (repo atelier `le-bon-chasseur-le-mauvais-chasseur-et-le-bon-test`, branche `main`)
+1. Ouvrir `src/Bouchonnois/Service/PartieDeChasseService.cs`, méthode `TirerSurUneGalinette` (l. 98-101) :
+   chasseurQuiTire.BallesRestantes--; / chasseurQuiTire.NbGalinettes++; / Terrain.NbGalinettes--; / Events.Add(...)
+2. Supprimer (commenter) la ligne 101 : `partieDeChasse.Events.Add(new Event(_timeProvider(), $"{chasseur} tire sur une galinette"));`
+3. Relancer les tests (`cd src && dotnet test`) : tout reste VERT
+4. Montrer le test responsable : `src/Bouchonnois.Tests/Service/PartieDeChasseServiceTests.cs`,
+   `TirerSurUneGalinette.AvecUnChasseurAyantDesBallesEtAssezDeGalinettesSurLeTerrain` (l. 95)
+   -> il vérifie Id, Status, Terrain et chaque Chasseur... mais jamais `Events`
+5. Rappeler : 100% de coverage, la ligne est exécutée mais jamais vérifiée. Remettre la ligne.
+PartieDeChasseService.cs -> TirerSurUneGalinette` (l. 91)
+-->
 
 ---
 layout: section
@@ -581,22 +592,6 @@ Mutation Score (%) = ( Mutants tués / Mutants générés ) × 100
 </div>
 
 <img src="/01.le-bon-test-ne-ment-pas/mutant.webp" class="w-56 flex-shrink-0 rounded-lg" />
-
-</div>
-
----
-codeSlide: true
----
-
-# Démo : mutation
-
-<div class="text-lg space-y-3 max-w-2xl">
-
-- On choisit une ligne du code de production
-- On la modifie/supprime à la main - c'est notre `mutant`
-- On relance la suite de tests
-
-<div class="accent-badge mt-4">Les tests passent toujours : le mutant a survécu...</div>
 
 </div>
 
@@ -676,6 +671,21 @@ codeSlide: true
 # Démo : tueur de mutant
 
 <img src="/01.le-bon-test-ne-ment-pas/mutant.webp" class="w-64 mx-auto rounded-lg mt-8" />
+
+<!--
+DÉMO (repo atelier, branche `main` ; solution sur `histoires/01.le-bon-test-ne-ment-pas`)
+1. Lancer Stryker : `cd src && dotnet stryker` (installé via `dotnet tool install -g dotnet-stryker`)
+2. Ouvrir `StrykerOutput/<date>/reports/mutation-report.html`, aller sur `PartieDeChasseService.cs`
+   -> montrer les mutants `Survived` : string mutation (messages des events), statement mutation (`Events.Add`, `_repository.Save`)
+3. Tuer le mutant dans `PartieDeChasseServiceTests.cs`, test `AvecUnChasseurAyantDesBallesEtAssezDeGalinettesSurLeTerrain` (l. 95) :
+   - figer le temps : `var now = new DateTime(2024, 6, 6, 14, 50, 45);` et `new PartieDeChasseService(repository, () => now)`
+     (à la place de `() => DateTime.Now`)
+   - ajouter : `Check.That(savedPartieDeChasse.Events).HasSize(1);`
+               `Check.That(savedPartieDeChasse.Events[0]).IsEqualTo(new Event(now, "Bernard tire sur une galinette"));`
+4. Relancer Stryker : le mutant sur `Events.Add` est tué, le score progresse
+5. Si le temps le permet : tests d'erreur (`EchoueCarLeChasseurNestPasDansLaPartie`)
+   -> `.Throws<ChasseurInconnu>().WithMessage("Chasseur inconnu Chasseur inconnu")` + `Check.That(repository.SavedPartieDeChasse()).IsNull();`
+-->
 
 ---
 layout: image
@@ -952,6 +962,23 @@ On écrit d'abord, en mots, ce qu'on voudrait pouvoir écrire, puis on génère 
 </div>
 
 </div>
+
+<!--
+DÉMO (repo atelier ; solution sur `histoires/02.le-bon-test-se-lit`, dossier `src/Bouchonnois.Tests/Builders/`)
+1. Repartir du test `AvecUnChasseurAyantDesBallesEtAssezDeGalinettesSurLeTerrain` (`PartieDeChasseServiceTests.cs` l. 95)
+   -> identifier dans l'Arrange ce qui compte : le nb de galinettes et les chasseurs présents
+2. Écrire d'abord ce qu'on voudrait lire (le code ne compile pas encore) :
+   var partieDeChasse = UnePartieDeChasseDuBouchonnois()
+       .SurUnTerrainRicheEnGalinettes()
+       .Avec(Dédé(), Bernard(), Robert())
+       .Build();
+3. Generate Code From Usage depuis l'IDE (Alt+Entrée) :
+   - `Builders/PartieDeChasseBuilder.cs` : `UnePartieDeChasseDuBouchonnois()` (static), `SurUnTerrainRicheEnGalinettes(int nbGalinettes = 3)`, `Avec(params ChasseurBuilder[])`, `Build()`
+   - `Builders/ChasseurBuilder.cs` : Object Mothers `Dédé()` (20 balles), `Bernard()` (8), `Robert()` (12), `Build()`
+4. Remplacer l'Arrange : `repository.Add(partieDeChasse);` puis `TirerSurUneGalinette(partieDeChasse.Id, "Bernard")`
+5. Vérifier que le test reste vert, puis montrer qu'il détecte toujours un mutant :
+   commenter `chasseurQuiTire.NbGalinettes++;` (`PartieDeChasseService.cs` l. 99) -> ROUGE, remettre la ligne
+-->
 
 ---
 codeSlide: true
@@ -1656,6 +1683,17 @@ FailedArchRuleException:
 <div class="mt-4 text-lg">Rouge, avec un message qui pointe la classe et la dépendance en cause. On retire le champ temporaire, on revient au vert.</div>
 
 </v-click>
+
+<!--
+DÉMO (repo atelier, branche `histoires/05.le-bon-test-protege-larchitecture`)
+1. Montrer `src/Bouchonnois.Tests/Architecture/ArchitectureRules.cs` : `ArchUnitExtensions` (ArchLoader sur l'assembly de `PartieDeChasseService`) + `DomainModelRules`
+2. Lancer `DomainModelRules` : VERT
+   (sur `main`, le `using Bouchonnois.Service;` mort de `PartieDeChasse.cs` l. 1 ne fait pas échouer la règle : ArchUnitNET lit le compilé, pas le source)
+3. Casser volontairement : dans `src/Bouchonnois/Domain/PartieDeChasse.cs`, ajouter un champ
+   `private PartieDeChasseService? _service;` (+ `using Bouchonnois.Service;` si absent)
+4. Relancer : ROUGE -> `Bouchonnois.Domain.PartieDeChasse does depend on "Bouchonnois.Service.PartieDeChasseService"`
+5. Retirer le champ, revenir au vert. "Never trust a test you haven't seen fail"
+-->
 
 ---
 layout: statement
